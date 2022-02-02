@@ -1,76 +1,95 @@
 package de.quandooSelenide.pages;
 
-import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 
-public class RestBerlinPage {
+public class RestBerlinPage extends CommonsPage {
+//    public RestBerlinPage(WebDriver driver) {
+//        super(driver);
+//    }
 
-    /* Constructor */
 
-    public RestBerlinPage() {
-        open("https://www.quandoo.de/en/berlin");
-        getWebDriver().manage().window().maximize();
-    }
 
     /* Elements */
 
-    private static By restCountBeforeText = By.cssSelector(".cfhRwc");
-    private static By topRatedBtn = By.xpath("//button[contains(.,'Top rated')]");
-    private static By firstItemInCuisineFilter = By.xpath("//div[@class='ulye33-0 cdvAxr'] / li[1] / label[1]");
-    private static By firstItemText = By.xpath("//div[@class='ulye33-0 cdvAxr']  / li[1] //div[1] /span[2]");
-    private static By list = By.cssSelector(".iTkAfG");
-    private static By restCountAfter = By.cssSelector(".cfhRwc");
+    private static By topRatedBtn = By.xpath("//button[@data-qa='filter-button-top-rated']");
+    private static By reviewScore = By.xpath("//*[@id='tab-merchants']/div[2]/div[1]/div[2]/div[2]/div/div/div");
+    private static By africanCuisineFilter = By.xpath("//div[@data-qa='filter-cuisine-label-03c331d2-8f5f-4d45-8731-e5e98ebfee00']");
+    private static By africanCuisineFilterNumber = By.xpath("//div[@data-qa='filter-cuisine-label-03c331d2-8f5f-4d45-8731-e5e98ebfee00'] /span[2]");
+    private static By merchantCards = By.xpath("//div[@data-qa='merchant-card-wrapper']");
+    private static By resultsCount = By.xpath("//div[@data-qa='results-count']");
+    private static By firstMerchCard = By.xpath("//div[@data-qa='merchant-card-wrapper'] [1]");
+
+    private static By scoreOfFirstRestaurant = By.xpath("//div[@data-qa='merchant-card-wrapper'] [1] //div[@font-size='body.lg']");
+
 
 
     /* Methods */
 
-    public void acceptAllCookies() {
-        if ($(byText("Accept all")).exists()){
-        $(byText("Accept all")).click();
-        }
-    }
-
-    public String getRestCountBeforeText() {
-        return $(restCountBeforeText).getText();
+    public RestBerlinPage openPage() {
+        open(BASE_URL + "/en/berlin");
+        getWebDriver().manage().window().maximize();
+        return page(RestBerlinPage.class);
     }
 
     public void clickOnTopRated() {
         $(topRatedBtn).click();
-        pause(3000);
     }
 
-    public SelenideElement getRestCountAfter() {
-        return $(restCountAfter); }
-
-    public void selectFirstItemInCuisineFilter() {
-        $(firstItemInCuisineFilter).click();
-        pause(3000);
+    public SelenideElement firstRestaurantCard(){
+        return $(firstMerchCard);
     }
 
-    public String getFirstItemText() {
-       return $(firstItemText).getText();
+
+    public int getFirstRestaurantRating(){
+        String score = $(reviewScore).getText().split("\\.")[0];
+        return Integer.parseInt(score);
     }
 
-    public int getCountFirstItemInCuisine(String str) {
+    public SelenideElement restaurantCount() {
+        return $(resultsCount);
+    }
+
+
+    public void selectAfricanCuisineFilter() {
+        $(africanCuisineFilter).click();
+
+    }
+
+    public int getAfricanRestaurantCount() {
+        String str = $(africanCuisineFilterNumber).getText();
         int count = Integer.parseInt(str.substring(1, str.length() - 1));
         return count;
     }
 
-    public int getListSize() {
-        return $$(list).size();
+    public int getRestaurantListSize() {
+        return $$(merchantCards).size();
     }
 
-    // common method
-    public void pause(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+    public String getScoreOfFirstRestaurant() {
+        String scoreText= $(scoreOfFirstRestaurant).getText();
+        int index = scoreText.indexOf("/6");
+        return scoreText.substring(0,index);
     }
+
+    public RestaurantPage clickOnFirstRestaurant() {
+        $(firstMerchCard).click();
+        return new RestaurantPage();
+    }
+
+
+//    public void pause(int millis) {
+//        try {
+//            Thread.sleep(millis);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
 }
