@@ -26,6 +26,8 @@ public class RestBerlinPage extends CommonsPage {
     private static By firstMerchCard = By.xpath("//div[@data-qa='merchant-card-wrapper'] [1]");
 
     private static By scoreOfFirstRestaurant = By.xpath("//div[@data-qa='merchant-card-wrapper'] [1] //div[@font-size='body.lg']");
+    private static By searchField = By.xpath("//input[@data-qa='search-bar-dining-input']");
+    private static By africanInMenu = By.xpath("//form[@id='searchForm']/div[1]/div[1]/div[1]/div[2]/li[1]");
 
 
 
@@ -83,13 +85,22 @@ public class RestBerlinPage extends CommonsPage {
         return new RestaurantPage();
     }
 
+    public void inputAfricanInSearchField(String africanStr) {
+        $(searchField).setValue(africanStr);
+    }
 
-//    public void pause(int millis) {
-//        try {
-//            Thread.sleep(millis);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public void selectAfricanCuisine() {
+        $(africanInMenu).click();
+        pause(3000);
+    }
+
+
+    public void pause(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
